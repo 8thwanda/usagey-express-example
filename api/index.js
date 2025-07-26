@@ -6,8 +6,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 // Import routes
-const apiRoutes = require('./routes/api');
-const webRoutes = require('./routes/web');
+const apiRoutes = require('../routes/api');
+const webRoutes = require('../routes/web');
 
 const app = express();
 
@@ -19,10 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set view engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Add path to all template renders
 app.use((req, res, next) => {
@@ -52,19 +52,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server only when running directly (not when imported)
-if (require.main === module) {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`
-╔══════════════════════════════════════════════════════════╗
-║                                                          ║
-║   Usagey Express Example Server                          ║
-║   Running on http://localhost:${PORT}                    ║
-║                                                          ║
-╚══════════════════════════════════════════════════════════╝
-    `);
-  });
-}
-
+// Exporting the app for Vercel
 module.exports = app;

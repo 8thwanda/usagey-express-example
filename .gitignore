@@ -33,3 +33,4 @@ coverage
 *.swp
 *.swo
 .DS_Store
+.vercel
