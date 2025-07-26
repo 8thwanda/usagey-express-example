@@ -31,7 +31,7 @@ This example application demonstrates:
 
 1. Clone this repository
 ```bash
-git clone https://github.com/usagey/usagey-express-example.git
+git clone https://github.com/8thwanda/usagey-express-example.git
 cd usagey-express-example
 ```
 
