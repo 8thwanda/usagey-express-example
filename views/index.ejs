@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">
+        Usagey + Express Example
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Demonstration of integrating Usagey for usage-based pricing in an Express application
+      </p>
+      
+      <% if (!isApiKeySet && !useMockData) { %>
+        <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 max-w-2xl mx-auto text-left">
+          <div class="flex">
+            <div class="ml-3">
+              <p class="text-sm text-yellow-700 font-medium">
+                API Key Not Configured
+              </p>
+              <p class="mt-2 text-sm text-yellow-700">
+                Please set your Usagey API key in the <code class="bg-yellow-100 px-1 py-0.5 rounded">.env</code> file 
+                to enable full functionality of this example. Alternatively, set <code class="bg-yellow-100 px-1 py-0.5 rounded">USE_MOCK_DATA=true</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+      <% } else if (useMockData) { %>
+        <div class="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 max-w-2xl mx-auto text-left">
+          <div class="flex">
+            <div class="ml-3">
+              <p class="text-sm text-blue-700 font-medium">
+                Using Mock Data Mode
+              </p>
+              <p class="mt-2 text-sm text-blue-700">
+                This example is running with mock data. Set <code class="bg-blue-100 px-1 py-0.5 rounded">USE_MOCK_DATA=false</code> and provide a valid
+                <code class="bg-blue-100 px-1 py-0.5 rounded">USAGEY_API_KEY</code> to use the actual Usagey API.
+              </p>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <!-- Usage Tracking Card -->
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <h2 class="text-xl font-semibold mb-4">Track Usage</h2>
+        <p class="text-gray-600 mb-6">
+          Send usage events to Usagey to track how your customers are using your application.
+        </p>
+        <a href="/usage-tracking" class="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 inline-block">
+          View Demo
+        </a>
+      </div>
+
+      <!-- Usage Dashboard Card -->
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <h2 class="text-xl font-semibold mb-4">Usage Dashboard</h2>
+        <p class="text-gray-600 mb-6">
+          View your usage data with charts and visualizations to understand consumption patterns.
+        </p>
+        <a href="/usage-dashboard" class="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 inline-block">
+          View Demo
+        </a>
+      </div>
+
+      <!-- Pricing Plans Card -->
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <h2 class="text-xl font-semibold mb-4">Pricing Plans</h2>
+        <p class="text-gray-600 mb-6">
+          Implement flexible pricing tiers and see how they affect billing based on usage.
+        </p>
+        <a href="/pricing-demo" class="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 inline-block">
+          View Demo
+        </a>
+      </div>
+    </div>
+
+    <div class="bg-gray-50 rounded-lg p-8 max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold mb-6 text-center">How To Use This Example</h2>
+      <div class="space-y-4">
+        <p class="text-gray-700">
+          This example demonstrates how to integrate the Usagey SDK into an Express application for tracking usage
+          and implementing usage-based pricing.
+        </p>
+
+        <div class="space-y-2">
+          <h3 class="font-semibold text-lg">Getting Started:</h3>
+          <ol class="list-decimal pl-5 space-y-2">
+            <li>Copy <code class="bg-gray-100 px-1 py-0.5 rounded">.env.example</code> to <code class="bg-gray-100 px-1 py-0.5 rounded">.env</code> and add your Usagey API key</li>
+            <li>Run <code class="bg-gray-100 px-1 py-0.5 rounded">npm install</code> to install dependencies</li>
+            <li>Run <code class="bg-gray-100 px-1 py-0.5 rounded">npm start</code> to start the server (or <code class="bg-gray-100 px-1 py-0.5 rounded">npm run dev</code> for development with hot reload)</li>
+            <li>Open <code class="bg-gray-100 px-1 py-0.5 rounded">http://localhost:3000</code> in your browser</li>
+          </ol>
+        </div>
+
+        <p class="text-gray-700">
+          Check out the source code to see how each feature is implemented. The main functionality is in the 
+          <code class="bg-gray-100 px-1 py-0.5 rounded">lib/usagey-client.js</code> file and the Express route handlers.
+        </p>
+        
+        <p class="text-gray-700">
+          For more information, visit the <a href="https://www.npmjs.com/package/usagey" target="_blank" class="text-blue-600 hover:underline">Usagey NPM package</a> or 
+          read the <a href="https://usagey.com/docs" target="_blank" class="text-blue-600 hover:underline">official documentation</a>.
+        </p>
+      </div>
+
+      <div class="mt-8 border-t pt-8">
+        <h3 class="font-semibold text-lg mb-4">API Endpoints</h3>
+        <div class="space-y-3">
+          <div class="bg-white p-4 rounded-md border">
+            <div class="font-mono text-sm flex items-center">
+              <span class="bg-green-100 text-green-800 px-2 py-1 rounded mr-2">POST</span>
+              <span>/api/track</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-600">Track a usage event</p>
+          </div>
+          
+          <div class="bg-white p-4 rounded-md border">
+            <div class="font-mono text-sm flex items-center">
+              <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">GET</span>
+              <span>/api/stats</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-600">Get usage statistics</p>
+          </div>
+          
+          <div class="bg-white p-4 rounded-md border">
+            <div class="font-mono text-sm flex items-center">
+              <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">GET</span>
+              <span>/api/events</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-600">Get recent usage events</p>
+          </div>
+          
+          <div class="bg-white p-4 rounded-md border">
+            <div class="font-mono text-sm flex items-center">
+              <span class="bg-green-100 text-green-800 px-2 py-1 rounded mr-2">POST</span>
+              <span>/api/calculate</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-600">Calculate cost based on pricing model and usage</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
