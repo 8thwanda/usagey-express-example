@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title }) %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-4">Usage Tracking Demo</h1>
+      <p class="text-gray-600">
+        This demo shows how to track usage events with Usagey. Fill out the form below to send a usage event.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Form Section -->
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <h2 class="text-xl font-semibold mb-4">Track Usage Event</h2>
+        
+        <form id="usageForm" action="/api/track" method="POST" class="space-y-4">
+          <div>
+            <label for="eventType" class="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
+            <select 
+              id="eventType"
+              name="event_type"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <% eventTypes.forEach(type => { %>
+                <option value="<%= type %>"><%= type %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div id="customEventTypeContainer" class="hidden">
+            <label for="customEventType" class="block text-sm font-medium text-gray-700 mb-1">Custom Event Type</label>
+            <input
+              id="customEventType"
+              type="text"
+              name="custom_event_type"
+              placeholder="e.g., file_upload"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          <div>
+            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+            <input
+              id="quantity"
+              type="number"
+              name="quantity"
+              min="1"
+              value="1"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          <div class="border-t border-gray-200 pt-4 mt-4">
+            <h3 class="text-lg font-medium mb-2">Metadata (Optional)</h3>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="endpoint" class="block text-sm font-medium text-gray-700 mb-1">Endpoint</label>
+                <input
+                  id="endpoint"
+                  type="text"
+                  name="endpoint"
+                  placeholder="/users"
+                  value="/users"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label for="method" class="block text-sm font-medium text-gray-700 mb-1">Method</label>
+                <select 
+                  id="method"
+                  name="method"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="GET">GET</option>
+                  <option value="POST">POST</option>
+                  <option value="PUT">PUT</option>
+                  <option value="DELETE">DELETE</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            id="submitButton"
+            class="w-full bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 transition-colors"
+          >
+            Track Usage Event
+          </button>
+        </form>
+      </div>
+
+      <!-- Results Section -->
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <h2 class="text-xl font-semibold mb-4">Result</h2>
+        
+        <div id="loading" class="hidden py-20 flex justify-center items-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+        
+        <div id="errorContainer" class="hidden bg-red-50 border-l-4 border-red-500 p-4">
+          <p class="text-red-700 font-medium">Error</p>
+          <p id="errorMessage" class="text-red-500"></p>
+        </div>
+        
+        <div id="emptyResult" class="py-20 text-center text-gray-400">
+          <p>Submit the form to see the result</p>
+        </div>
+        
+        <div id="resultContainer" class="hidden space-y-4">
+          <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+            <p class="text-green-700 font-medium">Event tracked successfully!</p>
+          </div>
+          
+          <h3 class="font-medium text-lg">Response:</h3>
+          <pre id="responseJson" class="bg-gray-50 p-4 rounded-md overflow-x-auto"></pre>
+
+          <div class="mt-4">
+            <h3 class="font-medium text-lg mb-2">Tracking Details:</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div class="bg-gray-50 p-3 rounded-md">
+                <span class="font-medium">Event Type:</span> 
+                <span id="resultEventType" class="ml-2"></span>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-md">
+                <span class="font-medium">Quantity:</span>
+                <span id="resultQuantity" class="ml-2"></span>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-md">
+                <span class="font-medium">Endpoint:</span> 
+                <span id="resultEndpoint" class="ml-2"></span>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-md">
+                <span class="font-medium">Method:</span> 
+                <span id="resultMethod" class="ml-2"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 bg-gray-50 rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">How It Works</h2>
+      <div class="space-y-4">
+        <p>This demo uses the Usagey SDK to track usage events. The implementation follows these steps:</p>
+        
+        <ol class="list-decimal pl-5 space-y-2">
+          <li>Import the <code class="bg-gray-100 px-1 py-0.5 rounded">trackEvent</code> function from our client library</li>
+          <li>Collect event details through a form (event type, quantity, metadata)</li>
+          <li>Call <code class="bg-gray-100 px-1 py-0.5 rounded">trackEvent()</code> with the provided parameters</li>
+          <li>Display the API response, which includes confirmation and usage statistics</li>
+        </ol>
+        
+        <div class="bg-blue-50 p-4 rounded-md mt-4">
+          <h3 class="text-lg font-medium text-blue-800 mb-2">Server-Side Code Example</h3>
+          <pre class="bg-white p-4 rounded-md overflow-x-auto text-sm">
+const { trackEvent } = require('../lib/usagey-client');
+
+// Route handler
+router.post('/track', async (req, res) => {
+  try {
+    const { event_type, quantity = 1, metadata = {} } = req.body;
+    
+    // Track a usage event
+    const result = await trackEvent(
+      event_type,   // Event type
+      quantity,     // Quantity
+      metadata      // Optional metadata
+    );
+    
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('usageForm');
+      const eventTypeSelect = document.getElementById('eventType');
+      const customEventTypeContainer = document.getElementById('customEventTypeContainer');
+      const customEventTypeInput = document.getElementById('customEventType');
+      const submitButton = document.getElementById('submitButton');
+      
+      const loading = document.getElementById('loading');
+      const errorContainer = document.getElementById('errorContainer');
+      const errorMessage = document.getElementById('errorMessage');
+      const emptyResult = document.getElementById('emptyResult');
+      const resultContainer = document.getElementById('resultContainer');
+      const responseJson = document.getElementById('responseJson');
+      const resultEventType = document.getElementById('resultEventType');
+      const resultQuantity = document.getElementById('resultQuantity');
+      const resultEndpoint = document.getElementById('resultEndpoint');
+      const resultMethod = document.getElementById('resultMethod');
+      
+      // Show/hide custom event type field based on selection
+      eventTypeSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+          customEventTypeContainer.classList.remove('hidden');
+          customEventTypeInput.required = true;
+        } else {
+          customEventTypeContainer.classList.add('hidden');
+          customEventTypeInput.required = false;
+        }
+      });
+      
+      // Handle form submission
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        loading.classList.remove('hidden');
+        emptyResult.classList.add('hidden');
+        errorContainer.classList.add('hidden');
+        resultContainer.classList.add('hidden');
+        submitButton.disabled = true;
+        
+        // Get form data
+        const formData = new FormData(form);
+        const eventType = formData.get('event_type');
+        const customEventType = formData.get('custom_event_type');
+        const quantity = formData.get('quantity');
+        const endpoint = formData.get('endpoint');
+        const method = formData.get('method');
+        
+        // Prepare request body
+        const requestBody = {
+          event_type: eventType === 'custom' ? customEventType : eventType,
+          quantity: parseInt(quantity),
+          metadata: {
+            endpoint: endpoint,
+            method: method
+          }
+        };
+        
+        // Send API request
+        fetch('/api/track', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error || 'Request failed'); });
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Hide loading state
+          loading.classList.add('hidden');
+          submitButton.disabled = false;
+          
+          // Show result
+          resultContainer.classList.remove('hidden');
+          responseJson.textContent = JSON.stringify(data, null, 2);
+          resultEventType.textContent = eventType === 'custom' ? customEventType : eventType;
+          resultQuantity.textContent = quantity;
+          resultEndpoint.textContent = endpoint;
+          resultMethod.textContent = method;
+        })
+        .catch(error => {
+          // Hide loading state
+          loading.classList.add('hidden');
+          submitButton.disabled = false;
+          
+          // Show error
+          errorContainer.classList.remove('hidden');
+          errorMessage.textContent = error.message;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
